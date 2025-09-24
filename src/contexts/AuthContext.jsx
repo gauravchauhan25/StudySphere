@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect, createContext } from "react";
+import api from "../services/appwrite.js";
 
 const AuthContext = createContext();
 
@@ -9,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const session = true;  //will check session existence
+        const session = await api.getAccount();
         setIsAuthenticated(session);
       } catch (error) {
         console.error("Error checking authentication:", error);

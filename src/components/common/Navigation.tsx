@@ -21,6 +21,9 @@ export const Navigation: React.FC = () => {
     return location.pathname === href;
   };
 
+  const defaultImage =
+    "https://pathwayactivities.co.uk/wp-content/uploads/2016/04/Profile_avatar_placeholder_large-circle-300x300.png";
+
   return (
     <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,7 +53,7 @@ export const Navigation: React.FC = () => {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4 gap-2">
             <Link to="/sign-in">
               {!isAuthenticated && (
                 <Button variant="outline" size="sm" className="w-full">
@@ -63,6 +66,16 @@ export const Navigation: React.FC = () => {
               <Button size="sm">
                 Start Chatting
               </Button>
+            </Link>
+
+            <Link to="/my-profile">
+              {isAuthenticated && (<div className="w-9 h-9 rounded-full overflow-hidden">
+                <img
+                  src={defaultImage}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              </div>)}
             </Link>
           </div>
 

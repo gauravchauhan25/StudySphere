@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, User, Phone } from 'lucide-react';
-import SocialButtons from './SocialButtons';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Mail, Lock, Eye, EyeOff, User, Phone } from "lucide-react";
+import SocialButtons from "./SocialButtons";
+import { Link } from "react-router-dom";
+import api from "../../services/appwrite";
 
 const SignUpForm = ({ toggleForm }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -18,11 +19,11 @@ const SignUpForm = ({ toggleForm }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -31,39 +32,40 @@ const SignUpForm = ({ toggleForm }) => {
 
     // Name validation
     if (!formData.name.trim()) {
-      newErrors.name = 'Full name is required';
+      newErrors.name = "Full name is required";
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
+      newErrors.name = "Name must be at least 2 characters";
     }
 
     // Email validation
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
-    // Phone validation
-    if (!formData.phone) {
-      newErrors.phone = 'Phone number is required';
-    } else if (!/^\+?[\d\s\-\(\)]{10,}$/.test(formData.phone)) {
-      newErrors.phone = 'Please enter a valid phone number';
+    // PhoneNumber validation
+    if (!formData.phoneNumber) {
+      newErrors.phoneNumber = "PhoneNumber number is required";
+    } else if (!/^\+?[\d\s\-\(\)]{10,}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Please enter a valid phoneNumber number";
     }
 
     // Password validation
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = "Password must be at least 8 characters";
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = 'Password must contain uppercase, lowercase, and number';
+      newErrors.password =
+        "Password must contain uppercase, lowercase, and number";
     }
 
     // Confirm password validation
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
 
     setErrors(newErrors);
@@ -72,17 +74,20 @@ const SignUpForm = ({ toggleForm }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
-    setIsLoading(true);
-    
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Sign up attempt:', formData);
-      alert('Account created successfully! (This is a demo)');
+      setIsLoading(true);
+
+      const logIn = await api.createAccount({
+        email: formData.email,
+        name: formData.name,
+        password: formData.password,
+        phoneNumber: formData.phoneNumber,
+      });
     } catch (error) {
-      console.error('Sign up error:', error);
+      console.error("Sign up error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -92,7 +97,10 @@ const SignUpForm = ({ toggleForm }) => {
     <div>
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Full Name
           </label>
           <div className="relative">
@@ -107,7 +115,7 @@ const SignUpForm = ({ toggleForm }) => {
               onChange={handleChange}
               placeholder="Enter your full name"
               className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                errors.name ? 'border-red-500' : 'border-gray-300'
+                errors.name ? "border-red-500" : "border-gray-300"
               }`}
             />
           </div>
@@ -118,7 +126,10 @@ const SignUpForm = ({ toggleForm }) => {
 
         {/* Email Field */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Email Address
           </label>
           <div className="relative">
@@ -133,7 +144,7 @@ const SignUpForm = ({ toggleForm }) => {
               onChange={handleChange}
               placeholder="Enter your email"
               className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
+                errors.email ? "border-red-500" : "border-gray-300"
               }`}
             />
           </div>
@@ -142,9 +153,12 @@ const SignUpForm = ({ toggleForm }) => {
           )}
         </div>
 
-        {/* Phone Field */}
+        {/* PhoneNumber Field */}
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="phoneNumber"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Phone Number
           </label>
           <div className="relative">
@@ -153,24 +167,27 @@ const SignUpForm = ({ toggleForm }) => {
             </div>
             <input
               type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone}
+              id="phoneNumber"
+              name="phoneNumber"
+              value={formData.phoneNumber}
               onChange={handleChange}
               placeholder="Enter your phone number"
               className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                errors.phone ? 'border-red-500' : 'border-gray-300'
+                errors.phoneNumber ? "border-red-500" : "border-gray-300"
               }`}
             />
           </div>
-          {errors.phone && (
-            <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+          {errors.phoneNumber && (
+            <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>
           )}
         </div>
 
         {/* Password Field */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Password
           </label>
           <div className="relative">
@@ -178,14 +195,14 @@ const SignUpForm = ({ toggleForm }) => {
               <Lock className="h-5 w-5 text-gray-400" />
             </div>
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Create a strong password"
               className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
+                errors.password ? "border-red-500" : "border-gray-300"
               }`}
             />
             <button
@@ -207,7 +224,10 @@ const SignUpForm = ({ toggleForm }) => {
 
         {/* Confirm Password Field */}
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="confirmPassword"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Confirm Password
           </label>
           <div className="relative">
@@ -215,14 +235,14 @@ const SignUpForm = ({ toggleForm }) => {
               <Lock className="h-5 w-5 text-gray-400" />
             </div>
             <input
-              type={showConfirmPassword ? 'text' : 'password'}
+              type={showConfirmPassword ? "text" : "password"}
               id="confirmPassword"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="Confirm your password"
               className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                errors.confirmPassword ? "border-red-500" : "border-gray-300"
               }`}
             />
             <button
@@ -238,25 +258,27 @@ const SignUpForm = ({ toggleForm }) => {
             </button>
           </div>
           {errors.confirmPassword && (
-            <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+            <p className="mt-1 text-sm text-red-600">
+              {errors.confirmPassword}
+            </p>
           )}
         </div>
 
         {/* Terms and Conditions */}
         <div className="text-xs text-gray-600">
-          By signing up, you agree to our{' '}
+          By signing up, you agree to our{" "}
           <button
             type="button"
             className="text-blue-600 hover:text-blue-800 underline"
-            onClick={() => alert('Terms of Service would be shown here')}
+            onClick={() => alert("Terms of Service would be shown here")}
           >
             Terms of Service
-          </button>{' '}
-          and{' '}
+          </button>{" "}
+          and{" "}
           <button
             type="button"
             className="text-blue-600 hover:text-blue-800 underline"
-            onClick={() => alert('Privacy Policy would be shown here')}
+            onClick={() => alert("Privacy Policy would be shown here")}
           >
             Privacy Policy
           </button>
@@ -274,7 +296,7 @@ const SignUpForm = ({ toggleForm }) => {
               Creating Account...
             </div>
           ) : (
-            'Create Account'
+            "Create Account"
           )}
         </button>
       </form>
@@ -285,15 +307,15 @@ const SignUpForm = ({ toggleForm }) => {
       {/* Toggle to Sign In */}
       <div className="mt-8 text-center">
         <p className="text-gray-600">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link to="/sign-in">
-          <button
-            onClick={toggleForm}
-            className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            <button
+              onClick={toggleForm}
+              className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
             >
-            Sign In
-          </button>
-            </Link>
+              Sign In
+            </button>
+          </Link>
         </p>
       </div>
     </div>

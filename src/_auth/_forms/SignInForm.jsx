@@ -1,42 +1,42 @@
-import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import SocialButtons from './SocialButtons';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import SocialButtons from "./SocialButtons";
+import { Link } from "react-router-dom";
+import api from "../../services/appwrite";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 const SignInForm = ({ toggleForm }) => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const {checkAuthUser} = useAuthContext();
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    // Email validation
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
-    // Password validation
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
 
     setErrors(newErrors);
@@ -48,15 +48,27 @@ const SignInForm = ({ toggleForm }) => {
 
     if (!validateForm()) return;
 
-    setIsLoading(true);
-
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Sign in attempt:', formData);
-      alert('Sign in successful! (This is a demo)');
+      setIsLoading(true);
+      const session = await api.login({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (session) {
+        window.location.reload();
+        navigate("/");
+      }
+
+      const isLoggedIn = await checkAuthUser();
+      if (isLoggedIn) {
+        window.location.reload();
+        navigate("/");
+      } else {
+        navigate("/sign-in");
+      }
     } catch (error) {
-      console.error('Sign in error:', error);
+      toast.error("Incorrect email or password!");
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +79,10 @@ const SignInForm = ({ toggleForm }) => {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Email Field */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Email Address
           </label>
           <div className="relative">
@@ -81,8 +96,9 @@ const SignInForm = ({ toggleForm }) => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
-              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${errors.email ? 'border-red-500' : 'border-gray-300'
-                }`}
+              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                errors.email ? "border-red-500" : "border-gray-300"
+              }`}
             />
           </div>
           {errors.email && (
@@ -92,7 +108,10 @@ const SignInForm = ({ toggleForm }) => {
 
         {/* Password Field */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Password
           </label>
           <div className="relative">
@@ -100,14 +119,15 @@ const SignInForm = ({ toggleForm }) => {
               <Lock className="h-5 w-5 text-gray-400" />
             </div>
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
-              className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${errors.password ? 'border-red-500' : 'border-gray-300'
-                }`}
+              className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                errors.password ? "border-red-500" : "border-gray-300"
+              }`}
             />
             <button
               type="button"
@@ -131,7 +151,9 @@ const SignInForm = ({ toggleForm }) => {
           <button
             type="button"
             className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
-            onClick={() => alert('Forgot password functionality would be implemented here')}
+            onClick={() =>
+              alert("Forgot password functionality would be implemented here")
+            }
           >
             Forgot your password?
           </button>
@@ -149,7 +171,7 @@ const SignInForm = ({ toggleForm }) => {
               Signing In...
             </div>
           ) : (
-            'Sign In'
+            "Sign In"
           )}
         </button>
       </form>
@@ -160,7 +182,7 @@ const SignInForm = ({ toggleForm }) => {
       {/* Toggle to Sign Up */}
       <div className="mt-8 text-center">
         <p className="text-gray-600">
-          Don't have an account?{' '}
+          Don't have an account?{" "}
           <Link to="/sign-up">
             <button
               onClick={toggleForm}

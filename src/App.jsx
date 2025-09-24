@@ -4,6 +4,7 @@ import { Landing } from "./pages/Landing";
 import { Chat } from "./pages/Chat";
 import { Reminders } from "./pages/Reminders";
 import { Dashboard } from "./pages/Dashboard";
+import { Profile } from "./pages/Profile";
 import { useAuthContext } from "./contexts/AuthContext";
 import SignUpForm from "./_auth/_forms/SignUpForm";
 import SignInForm from "./_auth/_forms/SignInForm";
@@ -53,6 +54,10 @@ function App() {
         <Route
           path="/reminders"
           element={<ProtectedRoute element={<Reminders />} />}
+        />
+        <Route
+          path="/my-profile"
+          element={<ProtectedRoute element={<Profile />} />}
         />
       </Route>
     </Routes>
