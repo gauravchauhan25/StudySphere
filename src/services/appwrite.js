@@ -82,13 +82,24 @@ export class Services {
     try {
       this.account.createOAuth2Session(
         "google",
-        "https://m723x5-5173.csb.app/chat",
+        "https://m723x5-5173.csb.app/",
         "https://m723x5-5173.csb.app/sign-in"
       );
     } catch (error) {
       console.error("Error :: Google Login:", error);
     }
   }
+
+  //=========LOGIN WITH GITHUB=============
+  async loginWithGithub() {
+    try {
+      this.account.createOAuth2Session("github", 'https://m723x5-5173.csb.app/', 'https://m723x5-5173.csb.app/sign-in')
+    } catch (error) {
+      console.log("Error logging in github: ", error);
+      
+    }
+  }
+
 
   //===========LOGOUTS THE USER===============
   async logout() {

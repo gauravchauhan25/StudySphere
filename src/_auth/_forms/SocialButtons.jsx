@@ -1,14 +1,28 @@
 import React from 'react';
-
+import { useNavigate } from "react-router-dom";
+import api from "../../services/appwrite";
 const SocialButtons = () => {
+  const navigate = useNavigate();
+
   const handleGoogleLogin = () => {
     console.log('Google login clicked');
     alert('Google login would be implemented here');
   };
 
-  const handleGithubLogin = () => {
-    console.log('GitHub login clicked');
-    alert('GitHub login would be implemented here');
+  const handleGithubLogin = async () => {
+    console.log("Github login clicked!")
+    try {
+      const loginResponse = await api.loginWithGithub();
+
+      if(loginResponse) {
+        window.reload();
+        navigate("/");
+      } else {
+        // toast.alert("GitHub Login Error!")
+      }
+    } catch (error) {
+      console.log("Error logging in:", error);
+    }
   };
 
   return (

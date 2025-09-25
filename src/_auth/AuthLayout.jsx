@@ -34,7 +34,7 @@ export default function AuthLayout() {
             </div>
           </nav>
 
-          <div className=" bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-50 flex items-center justify-center px-4">
+          <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
               <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
                 <div className="flex justify-center mb-8">
