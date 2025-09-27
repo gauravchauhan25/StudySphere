@@ -6,9 +6,13 @@ import { toast } from "react-toastify";
 const SocialButtons = () => {
   const navigate = useNavigate();
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     console.log("Google login clicked");
-    alert("Google login would be implemented here");
+    try {
+      await api.loginWithGoogle();
+    } catch (error) {
+      toast.error("Error logging in with Google!");
+    }
   };
 
   const handleGithubLogin = async () => {

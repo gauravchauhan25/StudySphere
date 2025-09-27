@@ -77,8 +77,8 @@ export class Services {
     try {
       this.account.createOAuth2Session(
         "google",
-        "https://m723x5-5173.csb.app/",
-        "https://m723x5-5173.csb.app/sign-in"
+        "https://study-sphere-private.vercel.app/",
+        "https://study-sphere-private.vercel.app/sign-in"
       );
     } catch (error) {
       console.error("Error :: Google Login:", error);
@@ -90,8 +90,8 @@ export class Services {
     try {
       this.account.createOAuth2Session(
         "github",
-        "https://study-sphere-private.vercel.app/",
-        "https://study-sphere-private.vercel.app/sign-in"
+        "https://m723x5-5173.csb.app/",
+        "https://m723x5-5173.csb.app/sign-in"
       );
     } catch (error) {
       console.log("Error logging in github: ", error);
