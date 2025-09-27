@@ -91,7 +91,7 @@ export class Services {
       this.account.createOAuth2Session(
         "github",
         "https://study-sphere-private.vercel.app/",
-        "https://study-sphere-private.vercel.app//sign-in"
+        "https://study-sphere-private.vercel.app/sign-in"
       );
     } catch (error) {
       console.log("Error logging in github: ", error);
