@@ -90,8 +90,8 @@ export class Services {
     try {
       this.account.createOAuth2Session(
         "github",
-        "https://m723x5-5173.csb.app/",
-        "https://m723x5-5173.csb.app/sign-in"
+        "https://study-sphere-private.vercel.app/",
+        "https://study-sphere-private.vercel.app//sign-in"
       );
     } catch (error) {
       console.log("Error logging in github: ", error);
@@ -128,9 +128,11 @@ export class Services {
     try {
       const user = await account.get();
 
-      const res = await databases.listDocuments(config.appwriteDatabaseID, config.appwriteUsersCollectionID, [
-        Query.equal("userId", user.$id),
-      ]);
+      const res = await databases.listDocuments(
+        config.appwriteDatabaseID,
+        config.appwriteUsersCollectionID,
+        [Query.equal("userId", user.$id)]
+      );
 
       return res.documents[0] || null;
     } catch (err) {
