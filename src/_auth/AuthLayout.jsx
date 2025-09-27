@@ -19,14 +19,14 @@ export default function AuthLayout() {
         <Navigate to="/" />
       ) : (
         <>
-          <nav className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+          <nav className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center h-16">
                 <Link to="/" className="flex items-center space-x-2">
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-500 rounded-lg flex items-center justify-center">
                     <MessageSquare className="w-5 h-5 text-white" />
                   </div>
-                  <span className="text-xl font-bold text-gray-900">
+                  <span className="text-xl font-bold text-gray-900 dark:text-white">
                     StudySphere
                   </span>
                 </Link>
@@ -34,18 +34,18 @@ export default function AuthLayout() {
             </div>
           </nav>
 
-          <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+          <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
-              <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700">
                 <div className="flex justify-center mb-8">
-                  <div className="flex bg-gray-100 rounded-lg p-1">
+                  <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
                     <Link to="/sign-in">
                       <button
                         onClick={() => setIsSignUp(false)}
                         className={`px-6 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                           !isSignUp
-                            ? "bg-white text-blue-600 shadow-sm"
-                            : "text-gray-500 hover:text-gray-700"
+                            ? "bg-white dark:bg-gray-900 text-blue-600 shadow-sm"
+                            : "text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"
                         }`}
                       >
                         Sign In
@@ -57,8 +57,8 @@ export default function AuthLayout() {
                         onClick={() => setIsSignUp(true)}
                         className={`px-6 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                           isSignUp
-                            ? "bg-white text-blue-600 shadow-sm"
-                            : "text-gray-500 hover:text-gray-700"
+                            ? "bg-white dark:bg-gray-900 text-blue-600 shadow-sm"
+                            : "text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-200"
                         }`}
                       >
                         Sign Up

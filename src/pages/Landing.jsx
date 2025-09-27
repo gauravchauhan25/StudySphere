@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRight,
@@ -12,7 +11,7 @@ import {
 import { Button } from "../components/common/Button";
 import { Card } from "../components/common/Card";
 
-export const Landing: React.FC = () => {
+export const Landing = () => {
   const features = [
     {
       icon: MessageCircle,
@@ -42,18 +41,18 @@ export const Landing: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
       {/* Hero Section */}
       <section className="relative pt-16 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
               Welcome to{" "}
               <span className="bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent">
                 StudySphere
               </span>
             </h1>
-            <p className="text-xl sm:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               Your personal space for smarter studying.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -76,8 +75,8 @@ export const Landing: React.FC = () => {
                   className="absolute inset-8 bg-gradient-to-br from-blue-600 to-teal-700 rounded-full opacity-40 animate-pulse"
                   style={{ animationDelay: "2s" }}
                 ></div>
-                <div className="absolute inset-12 bg-white rounded-full shadow-lg flex items-center justify-center">
-                  <MessageCircle className="w-16 h-16 text-blue-600" />
+                <div className="absolute inset-12 bg-white dark:bg-gray-800 rounded-full shadow-lg flex items-center justify-center">
+                  <MessageCircle className="w-16 h-16 text-blue-600 dark:text-teal-400" />
                 </div>
               </div>
             </div>
@@ -86,13 +85,16 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section
+        id="features"
+        className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Everything you need to excel
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               StudySphere combines AI-powered assistance with intuitive design
               to create the perfect study companion.
             </p>
@@ -112,20 +114,22 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6">
                 Why students choose StudySphere
               </h2>
               <div className="space-y-4">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                      <benefit.icon className="w-4 h-4 text-teal-600" />
+                    <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900 rounded-full flex items-center justify-center">
+                      <benefit.icon className="w-4 h-4 text-teal-600 dark:text-teal-300" />
                     </div>
-                    <span className="text-gray-700">{benefit.text}</span>
+                    <span className="text-gray-700 dark:text-gray-300">
+                      {benefit.text}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -135,37 +139,11 @@ export const Landing: React.FC = () => {
                 </Link>
               </div>
             </div>
-            {/* <div className="relative">
-              <div className="bg-white rounded-2xl shadow-xl p-6">
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                      <MessageCircle className="w-4 h-4 text-gray-600" />
-                    </div>
-                    <div className="bg-gray-100 rounded-lg p-3 flex-1">
-                      <p className="text-sm text-gray-800">
-                        How do I solve quadratic equations?
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-3 justify-end">
-                    <div className="bg-blue-600 text-white rounded-lg p-3 flex-1 max-w-xs">
-                      <p className="text-sm">
-                        I'll walk you through the steps! There are several methods...
-                      </p>
-                    </div>
-                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                      <MessageCircle className="w-4 h-4 text-white" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
       </section>
 
-      {/*  Section */}
+      {/* Call to Action Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-teal-500">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
@@ -184,7 +162,7 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gray-900 dark:bg-black py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="col-span-2 md:col-span-1">

@@ -12,8 +12,8 @@ export const Chat = () => {
       text: "Hello! I'm your StudySphere assistant. I'm here to help you with your studies. What would you like to learn about today?",
       sender: 'bot',
       timestamp: new Date(),
-      resources: []
-    }
+      resources: [],
+    },
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
@@ -22,7 +22,7 @@ export const Chat = () => {
     'Help with math problems',
     'Study tips',
     'Research resources',
-    'Writing assistance'
+    'Writing assistance',
   ];
 
   const scrollToBottom = () => {
@@ -48,7 +48,6 @@ export const Chat = () => {
     return data.reply;
   }
 
-
   const handleSendMessage = async (text) => {
     const userMessage = {
       id: Date.now().toString(),
@@ -57,18 +56,15 @@ export const Chat = () => {
       timestamp: new Date(),
     };
 
-    // Add user message immediately
     setMessages((prev) => [...prev, userMessage]);
     setIsTyping(true);
 
     try {
-      // Prepare messages to send to backend (map to { role, content })
       const apiMessages = [...messages, userMessage].map((m) => ({
         role: m.sender === 'user' ? 'user' : 'assistant',
         content: m.text,
       }));
 
-      // Call backend API
       const replyText = await getChatbotResponse(apiMessages);
 
       const botMessage = {
@@ -76,27 +72,27 @@ export const Chat = () => {
         text: replyText,
         sender: 'bot',
         timestamp: new Date(),
-        // Optionally parse resources from backend if supported
         resources: replyText.toLowerCase().includes('math')
           ? [
-            {
-              id: '1',
-              title: 'Khan Academy - Algebra Basics',
-              description:
-                'Complete guide to algebraic concepts and problem-solving techniques.',
-              url: '#',
-              subject: 'Mathematics',
-              type: 'video',
-            },
-            {
-              id: '2',
-              title: 'Math Problem Solver',
-              description: 'Step-by-step solutions for various math problems.',
-              url: '#',
-              subject: 'Mathematics',
-              type: 'article',
-            },
-          ]
+              {
+                id: '1',
+                title: 'Khan Academy - Algebra Basics',
+                description:
+                  'Complete guide to algebraic concepts and problem-solving techniques.',
+                url: '#',
+                subject: 'Mathematics',
+                type: 'video',
+              },
+              {
+                id: '2',
+                title: 'Math Problem Solver',
+                description:
+                  'Step-by-step solutions for various math problems.',
+                url: '#',
+                subject: 'Mathematics',
+                type: 'article',
+              },
+            ]
           : undefined,
       };
 
@@ -115,37 +111,25 @@ export const Chat = () => {
     }
   };
 
-  // const getBotResponse = (userMessage) => {
-  //   const message = userMessage.toLowerCase();
-
-  //   if (message.includes('math') || message.includes('equation') || message.includes('algebra')) {
-  //     return "I'd be happy to help you with math! I can assist with algebra, geometry, calculus, and more. What specific math topic or problem are you working on? I've also included some helpful resources below.";
-  //   } else if (message.includes('study') || message.includes('tips')) {
-  //     return 'Great question! Here are some effective study techniques: 1) Use active recall instead of just re-reading, 2) Practice spaced repetition, 3) Break study sessions into focused chunks, and 4) Test yourself regularly. What subject are you studying?';
-  //   } else if (message.includes('research') || message.includes('paper') || message.includes('writing')) {
-  //     return "I can help you with research and writing! Whether you need help finding credible sources, structuring your paper, or improving your writing style, I'm here to assist. What type of assignment are you working on?";
-  //   } else if (message.includes('hello') || message.includes('hi')) {
-  //     return "Hello! I'm excited to help you with your studies today. What subject or topic would you like to explore?";
-  //   } else {
-  //     return "That's an interesting question! I'm here to help you learn and understand various topics. Could you provide a bit more context about what you're studying or what specific help you need?";
-  //   }
-  // };
-
   const handleQuickReply = (suggestion) => {
     handleSendMessage(suggestion);
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4 sticky top-16 z-10">
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-4 sticky top-16 z-10">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-xl font-semibold text-gray-900">StudySphere Assistant</h1>
-          <p className="text-sm text-gray-600">Where questions find answers.</p>
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+            StudySphere Assistant
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Where questions find answers.
+          </p>
         </div>
         <div className="absolute right-4 top-4">
-          <button className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors duration-200">
-            <User className="w-5 h-5 text-gray-600" />
+          <button className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200">
+            <User className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
         </div>
       </div>
@@ -171,12 +155,9 @@ export const Chat = () => {
       </div>
 
       {/* Message Input */}
-      <div className="bg-white border-t border-gray-200">
+      <div className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
         <div className="max-w-4xl mx-auto">
-          <MessageInput
-            onSendMessage={handleSendMessage}
-            disabled={isTyping}
-          />
+          <MessageInput onSendMessage={handleSendMessage} disabled={isTyping} />
         </div>
       </div>
     </div>

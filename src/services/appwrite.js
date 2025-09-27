@@ -31,12 +31,7 @@ export class Services {
         return null;
       }
       const userId = newAccount.$id;
-      const newUser = await this.addUser(
-        userId,
-        name,
-        email,
-        phoneNumber
-      );
+      const newUser = await this.addUser(userId, name, email, phoneNumber);
 
       return newUser;
     } catch (error) {
@@ -93,13 +88,15 @@ export class Services {
   //=========LOGIN WITH GITHUB=============
   async loginWithGithub() {
     try {
-      this.account.createOAuth2Session("github", 'https://m723x5-5173.csb.app/', 'https://m723x5-5173.csb.app/sign-in')
+      this.account.createOAuth2Session(
+        "github",
+        "https://m723x5-5173.csb.app/",
+        "https://m723x5-5173.csb.app/sign-in"
+      );
     } catch (error) {
       console.log("Error logging in github: ", error);
-      
     }
   }
-
 
   //===========LOGOUTS THE USER===============
   async logout() {
@@ -113,12 +110,33 @@ export class Services {
   //=======GETS THE CURRENT ACCOUNT SESSION IF PRESENT==========
   async getAccount() {
     try {
+      const session = await this.account.getSession("current");
+      if (!session) {
+        console.log("No session found");
+        return null;
+      }
+
+      // Session exists, now get account info
       return await this.account.get();
     } catch (error) {
-      console.error("Error fetching account:", error);
+      console.error("Error fetching account or session:", error);
       return null;
     }
-    return null;
+  }
+
+  async getProfile() {
+    try {
+      const user = await account.get();
+
+      const res = await databases.listDocuments(config.appwriteDatabaseID, config.appwriteUsersCollectionID, [
+        Query.equal("userId", user.$id),
+      ]);
+
+      return res.documents[0] || null;
+    } catch (err) {
+      console.error("Error fetching profile from DB:", err);
+      return null;
+    }
   }
 }
 

@@ -1,10 +1,10 @@
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
-import { Navigation } from "./components/common/Navigation";
-import { Landing } from "./pages/Landing";
-import { Chat } from "./pages/Chat";
 import { Reminders } from "./pages/Reminders";
-import { Dashboard } from "./pages/Dashboard";
+import { Chat } from "./pages/Chat";
+import { Landing } from "./pages/Landing";
 import { Profile } from "./pages/Profile";
+import { Dashboard } from "./pages/Dashboard";
+import { Navigation } from "./components/common/Navigation";
 import { useAuthContext } from "./contexts/AuthContext";
 import SignUpForm from "./_auth/_forms/SignUpForm";
 import SignInForm from "./_auth/_forms/SignInForm";

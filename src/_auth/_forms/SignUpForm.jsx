@@ -3,6 +3,7 @@ import { Mail, Lock, Eye, EyeOff, User, Phone } from "lucide-react";
 import SocialButtons from "./SocialButtons";
 import { Link } from "react-router-dom";
 import api from "../../services/appwrite";
+import { toast } from "react-toastify";
 
 const SignUpForm = ({ toggleForm }) => {
   const [formData, setFormData] = useState({
@@ -21,7 +22,6 @@ const SignUpForm = ({ toggleForm }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -30,28 +30,24 @@ const SignUpForm = ({ toggleForm }) => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Name validation
     if (!formData.name.trim()) {
       newErrors.name = "Full name is required";
     } else if (formData.name.trim().length < 2) {
       newErrors.name = "Name must be at least 2 characters";
     }
 
-    // Email validation
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
-    // PhoneNumber validation
     if (!formData.phoneNumber) {
-      newErrors.phoneNumber = "PhoneNumber number is required";
+      newErrors.phoneNumber = "Phone number is required";
     } else if (!/^\+?[\d\s\-\(\)]{10,}$/.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = "Please enter a valid phoneNumber number";
+      newErrors.phoneNumber = "Please enter a valid phone number";
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
@@ -61,7 +57,6 @@ const SignUpForm = ({ toggleForm }) => {
         "Password must contain uppercase, lowercase, and number";
     }
 
-    // Confirm password validation
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
@@ -74,20 +69,20 @@ const SignUpForm = ({ toggleForm }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     try {
       setIsLoading(true);
-
-      const logIn = await api.createAccount({
+      await api.createAccount({
         email: formData.email,
         name: formData.name,
         password: formData.password,
         phoneNumber: formData.phoneNumber,
       });
+      toast.success("Account created successfully!");
     } catch (error) {
       console.error("Sign up error:", error);
+      toast.error(error?.message || "Failed to create account!");
     } finally {
       setIsLoading(false);
     }
@@ -96,10 +91,11 @@ const SignUpForm = ({ toggleForm }) => {
   return (
     <div>
       <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Full Name */}
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
             Full Name
           </label>
@@ -114,8 +110,11 @@ const SignUpForm = ({ toggleForm }) => {
               value={formData.name}
               onChange={handleChange}
               placeholder="Enter your full name"
-              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                errors.name ? "border-red-500" : "border-gray-300"
+              autoComplete="name"
+              className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                errors.name
+                  ? "border-red-500"
+                  : "border-gray-300 dark:border-gray-600"
               }`}
             />
           </div>
@@ -124,11 +123,11 @@ const SignUpForm = ({ toggleForm }) => {
           )}
         </div>
 
-        {/* Email Field */}
+        {/* Email */}
         <div>
           <label
             htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
             Email Address
           </label>
@@ -143,8 +142,11 @@ const SignUpForm = ({ toggleForm }) => {
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
-              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                errors.email ? "border-red-500" : "border-gray-300"
+              autoComplete="email"
+              className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                errors.email
+                  ? "border-red-500"
+                  : "border-gray-300 dark:border-gray-600"
               }`}
             />
           </div>
@@ -153,11 +155,11 @@ const SignUpForm = ({ toggleForm }) => {
           )}
         </div>
 
-        {/* PhoneNumber Field */}
+        {/* Phone Number */}
         <div>
           <label
             htmlFor="phoneNumber"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
             Phone Number
           </label>
@@ -172,8 +174,11 @@ const SignUpForm = ({ toggleForm }) => {
               value={formData.phoneNumber}
               onChange={handleChange}
               placeholder="Enter your phone number"
-              className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                errors.phoneNumber ? "border-red-500" : "border-gray-300"
+              autoComplete="tel"
+              className={`w-full pl-10 pr-4 py-3 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                errors.phoneNumber
+                  ? "border-red-500"
+                  : "border-gray-300 dark:border-gray-600"
               }`}
             />
           </div>
@@ -182,11 +187,11 @@ const SignUpForm = ({ toggleForm }) => {
           )}
         </div>
 
-        {/* Password Field */}
+        {/* Password */}
         <div>
           <label
             htmlFor="password"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
             Password
           </label>
@@ -201,8 +206,11 @@ const SignUpForm = ({ toggleForm }) => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Create a strong password"
-              className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                errors.password ? "border-red-500" : "border-gray-300"
+              autoComplete="new-password"
+              className={`w-full pl-10 pr-12 py-3 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                errors.password
+                  ? "border-red-500"
+                  : "border-gray-300 dark:border-gray-600"
               }`}
             />
             <button
@@ -211,9 +219,9 @@ const SignUpForm = ({ toggleForm }) => {
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" />
               ) : (
-                <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" />
               )}
             </button>
           </div>
@@ -222,11 +230,11 @@ const SignUpForm = ({ toggleForm }) => {
           )}
         </div>
 
-        {/* Confirm Password Field */}
+        {/* Confirm Password */}
         <div>
           <label
             htmlFor="confirmPassword"
-            className="block text-sm font-medium text-gray-700 mb-2"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
             Confirm Password
           </label>
@@ -241,8 +249,11 @@ const SignUpForm = ({ toggleForm }) => {
               value={formData.confirmPassword}
               onChange={handleChange}
               placeholder="Confirm your password"
-              className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                errors.confirmPassword ? "border-red-500" : "border-gray-300"
+              autoComplete="new-password"
+              className={`w-full pl-10 pr-12 py-3 border rounded-lg bg-white dark:bg-gray-800 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                errors.confirmPassword
+                  ? "border-red-500"
+                  : "border-gray-300 dark:border-gray-600"
               }`}
             />
             <button
@@ -251,9 +262,9 @@ const SignUpForm = ({ toggleForm }) => {
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
               {showConfirmPassword ? (
-                <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" />
               ) : (
-                <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" />
               )}
             </button>
           </div>
@@ -264,12 +275,12 @@ const SignUpForm = ({ toggleForm }) => {
           )}
         </div>
 
-        {/* Terms and Conditions */}
-        <div className="text-xs text-gray-600">
+        {/* Terms */}
+        <div className="text-xs text-gray-600 dark:text-gray-400">
           By signing up, you agree to our{" "}
           <button
             type="button"
-            className="text-blue-600 hover:text-blue-800 underline"
+            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline"
             onClick={() => alert("Terms of Service would be shown here")}
           >
             Terms of Service
@@ -277,14 +288,14 @@ const SignUpForm = ({ toggleForm }) => {
           and{" "}
           <button
             type="button"
-            className="text-blue-600 hover:text-blue-800 underline"
+            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline"
             onClick={() => alert("Privacy Policy would be shown here")}
           >
             Privacy Policy
           </button>
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <button
           type="submit"
           disabled={isLoading}
@@ -301,17 +312,16 @@ const SignUpForm = ({ toggleForm }) => {
         </button>
       </form>
 
-      {/* Social Login */}
       <SocialButtons />
 
       {/* Toggle to Sign In */}
       <div className="mt-8 text-center">
-        <p className="text-gray-600">
+        <p className="text-gray-600 dark:text-gray-400">
           Already have an account?{" "}
           <Link to="/sign-in">
             <button
               onClick={toggleForm}
-              className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors"
             >
               Sign In
             </button>
