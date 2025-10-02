@@ -124,11 +124,56 @@ export class Services {
     }
   }
 
+  async getCurrentAuthProvider() {
+    try {
+      const session = await this.account.getSession('current'); 
+      return session.provider;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  async checkEmail(email) {
+    try {
+      const response = await this.databases.listDocuments(
+        config.appwriteDatabaseID,
+        config.appwriteUsersCollectionID,
+        [Query.equal("email", email)]
+      );
+
+      if (response.documents.length === 0) {
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.log("Error in checkUsername function: ", error);
+    }
+  }
+
+  async getUserById(userId) {
+    try {
+      const response = await this.databases.listDocuments(
+        config.appwriteDatabaseID,
+        config.appwriteUsersCollectionID,
+        [Query.equal("userId", userId)]
+      );
+
+      if (response.documents.length > 0) {
+        return response.documents[0];
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      return null;
+    }
+  }
+
   async getProfile() {
     try {
-      const user = await account.get();
+      const user = await this.account.get();
 
-      const res = await databases.listDocuments(
+      const res = await this.databases.listDocuments(
         config.appwriteDatabaseID,
         config.appwriteUsersCollectionID,
         [Query.equal("userId", user.$id)]
