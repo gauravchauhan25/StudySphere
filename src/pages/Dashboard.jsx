@@ -19,57 +19,7 @@ export const Dashboard = () => {
       createdAt: new Date(2025, 0, 15),
       updatedAt: new Date(2025, 0, 15),
     },
-    {
-      id: "2",
-      title: "Biology Study Session",
-      messages: [],
-      createdAt: new Date(2025, 0, 14),
-      updatedAt: new Date(2025, 0, 14),
-    },
-    {
-      id: "3",
-      title: "Essay Writing Tips",
-      messages: [],
-      createdAt: new Date(2025, 0, 13),
-      updatedAt: new Date(2025, 0, 13),
-    },
-  ]);
-
-  const [savedResources] = useState([
-    {
-      id: "1",
-      title: "Khan Academy - Algebra Basics",
-      description:
-        "Complete guide to algebraic concepts and problem-solving techniques.",
-      url: "https://khanacademy.org/algebra",
-      subject: "Mathematics",
-      type: "video",
-    },
-    {
-      id: "2",
-      title: "Biology Study Guide",
-      description:
-        "Comprehensive biology notes covering cell structure and function.",
-      url: "#",
-      subject: "Biology",
-      type: "pdf",
-    },
-    {
-      id: "3",
-      title: "Writing Center - Essay Structure",
-      description: "Learn how to structure compelling academic essays.",
-      url: "#",
-      subject: "English",
-      type: "article",
-    },
-    {
-      id: "4",
-      title: "Physics Simulation Lab",
-      description: "Interactive physics simulations for better understanding.",
-      url: "#",
-      subject: "Physics",
-      type: "link",
-    },
+   
   ]);
 
   const getSubjectColor = (subject) => {

@@ -1,17 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "../components/common/Button";
 import { Plus, Calendar, Trash2 } from "lucide-react";
 
 export const Reminders = () => {
   const [reminders, setReminders] = useState([]);
-
   const [showForm, setShowForm] = useState(false);
-  const [newReminder, setNewReminder] = useState({
-    title: "",
-    date: "",
-  });
+  const [newReminder, setNewReminder] = useState({ title: "", date: "" });
 
-  // Add reminder
+  useEffect(() => {
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+  }, []);
+
+
+  // ✅ Check every 10 seconds if reminder time reached
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+
+      setReminders((prevReminders) =>
+        prevReminders.map((reminder) => {
+          if (!reminder.notified && now >= new Date(reminder.date)) {
+            showNotification(reminder.title);
+            return { ...reminder, notified: true }; // mark as notified
+          }
+          return reminder;
+        })
+      );
+    }, 10000); // every 10 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // ✅ Function to show browser notification
+  const showNotification = (message) => {
+    // Play sound
+    const audio = new Audio("/Pirates.mp3");
+    audio.play().catch((err) => console.log("Audio play failed:", err));
+
+    // Show browser notification
+    if (Notification.permission === "granted") {
+      new Notification("Study Sphere Reminder 🔔", {
+        body: message,
+        icon: "/favicon.ico",
+      });
+    } else {
+      alert(`🔔 Reminder: ${message}`);
+    }
+  };
+
+
+  // ✅ Add reminder
   const handleAddReminder = (e) => {
     e.preventDefault();
     if (!newReminder.title || !newReminder.date) return;
@@ -20,6 +60,7 @@ export const Reminders = () => {
       id: Date.now().toString(),
       title: newReminder.title,
       date: new Date(newReminder.date),
+      notified: false,
     };
 
     setReminders((prev) => [...prev, reminder]);
@@ -27,9 +68,9 @@ export const Reminders = () => {
     setShowForm(false);
   };
 
-  // Delete reminder
+  // ✅ Delete reminder
   const handleDeleteReminder = (id) => {
-    setReminders((prev) => prev.filter((reminder) => reminder.id !== id));
+    setReminders((prev) => prev.filter((r) => r.id !== id));
   };
 
   return (
