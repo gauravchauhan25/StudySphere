@@ -1,16 +1,58 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { User } from 'lucide-react';
-import { ChatBubble } from '../components/chat/ChatBubble';
-import { QuickReplies } from '../components/chat/QuickReplies';
-import { TypingIndicator } from '../components/chat/TypingIndicator';
-import { MessageInput } from '../components/chat/MessageInput';
+import React, { useState, useEffect, useRef } from "react";
+import { User } from "lucide-react";
+import { QuickReplies } from "../components/chat/QuickReplies";
+import { TypingIndicator } from "../components/chat/TypingIndicator";
+import { MessageInput } from "../components/chat/MessageInput";
+
+// ✅ Inline ChatBubble component with proper formatting + clickable links
+const ChatBubble = ({ message }) => {
+  const formatMessage = (text) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+
+    return parts.map((part, i) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a
+            key={i}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300"
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
+
+  return (
+    <div
+      className={`my-2 flex ${
+        message.sender === "user" ? "justify-end" : "justify-start"
+      }`}
+    >
+      <div
+        className={`px-4 py-3 rounded-2xl max-w-[80%] whitespace-pre-line ${
+          message.sender === "user"
+            ? "bg-blue-600 text-white"
+            : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+        } shadow-sm`}
+      >
+        {formatMessage(message.text)}
+      </div>
+    </div>
+  );
+};
 
 export const Chat = () => {
   const [messages, setMessages] = useState([
     {
-      id: '1',
+      id: "1",
       text: "Hello! I'm your StudySphere assistant. I'm here to help you with your studies. What would you like to learn about today?",
-      sender: 'bot',
+      sender: "bot",
       timestamp: new Date(),
       resources: [],
     },
@@ -19,14 +61,14 @@ export const Chat = () => {
   const messagesEndRef = useRef(null);
 
   const quickSuggestions = [
-    'Help with math problems',
-    'Study tips',
-    'Research resources',
-    'Writing assistance',
+    "Help with math problems",
+    "Study tips",
+    "Research resources",
+    "Writing assistance",
   ];
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -34,11 +76,14 @@ export const Chat = () => {
   }, [messages, isTyping]);
 
   async function getChatbotResponse(messages) {
-    const response = await fetch('http://localhost:3000/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages }),
-    });
+    const response = await fetch(
+      "https://study-sphere-private.vercel.app/api/chat",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`API error: ${response.statusText}`);
@@ -52,7 +97,7 @@ export const Chat = () => {
     const userMessage = {
       id: Date.now().toString(),
       text,
-      sender: 'user',
+      sender: "user",
       timestamp: new Date(),
     };
 
@@ -61,7 +106,7 @@ export const Chat = () => {
 
     try {
       const apiMessages = [...messages, userMessage].map((m) => ({
-        role: m.sender === 'user' ? 'user' : 'assistant',
+        role: m.sender === "user" ? "user" : "assistant",
         content: m.text,
       }));
 
@@ -70,27 +115,27 @@ export const Chat = () => {
       const botMessage = {
         id: (Date.now() + 1).toString(),
         text: replyText,
-        sender: 'bot',
+        sender: "bot",
         timestamp: new Date(),
-        resources: replyText.toLowerCase().includes('math')
+        resources: replyText.toLowerCase().includes("math")
           ? [
               {
-                id: '1',
-                title: 'Khan Academy - Algebra Basics',
+                id: "1",
+                title: "Khan Academy - Algebra Basics",
                 description:
-                  'Complete guide to algebraic concepts and problem-solving techniques.',
-                url: '#',
-                subject: 'Mathematics',
-                type: 'video',
+                  "Complete guide to algebraic concepts and problem-solving techniques.",
+                url: "#",
+                subject: "Mathematics",
+                type: "video",
               },
               {
-                id: '2',
-                title: 'Math Problem Solver',
+                id: "2",
+                title: "Math Problem Solver",
                 description:
-                  'Step-by-step solutions for various math problems.',
-                url: '#',
-                subject: 'Mathematics',
-                type: 'article',
+                  "Step-by-step solutions for various math problems.",
+                url: "#",
+                subject: "Mathematics",
+                type: "article",
               },
             ]
           : undefined,
@@ -98,11 +143,11 @@ export const Chat = () => {
 
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error('Error fetching bot reply:', error);
+      console.error("Error fetching bot reply:", error);
       const errorMessage = {
         id: (Date.now() + 2).toString(),
-        text: 'Sorry, something went wrong. Please try again later.',
-        sender: 'bot',
+        text: "Sorry, something went wrong. Please try again later.",
+        sender: "bot",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);

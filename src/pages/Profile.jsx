@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { User, Mail, Phone, Github } from "lucide-react";
 import api from "../services/appwrite"; // assuming you have an api wrapper
 
@@ -39,7 +39,7 @@ export const Profile = () => {
             <img
               src={
                 user?.avatar ||
-                "https://avatars.githubusercontent.com/u/9919?s=200&v=4" 
+                "https://avatars.githubusercontent.com/u/9919?s=200&v=4"
               }
               alt="User Avatar"
               className="w-24 h-24 rounded-full border-4 border-blue-600 shadow-md"
