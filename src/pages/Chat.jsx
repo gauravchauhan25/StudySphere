@@ -77,7 +77,7 @@ export const Chat = () => {
 
   async function getChatbotResponse(messages) {
     const response = await fetch(
-      "https://study-sphere-private.vercel.app/api/chat",
+      " https://study-sphere-jet.vercel.app/api/chat",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
