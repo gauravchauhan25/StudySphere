@@ -10,6 +10,7 @@ import {
   LogOut,
   Sun,
   Moon,
+  GraduationCap,
 } from "lucide-react";
 import { Button } from "./Button";
 import { useAuthContext } from "../../contexts/AuthContext";
@@ -25,10 +26,9 @@ export const Navigation = () => {
 
   const navigation = [
     { name: "Home", href: "/" },
-    { name: "Features", href: "#features" },
-    { name: "Resources", href: "#resources" },
     { name: "Dashboard", href: "/dashboard" },
     { name: "Reminders", href: "/reminders" },
+    { name: "Upload Notes", href: "/upload-notes" },
   ];
 
   const [darkMode, setDarkMode] = useState(() => {
@@ -79,8 +79,8 @@ export const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-500 rounded-lg flex items-center justify-center">
-              <MessageSquare className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-500 rounded-lg flex items-center justify-center gap-3">
+              <GraduationCap className="w-8 h-8 text-white" />
             </div>
             <span className="text-xl font-bold text-gray-900 dark:text-white">
               StudySphere

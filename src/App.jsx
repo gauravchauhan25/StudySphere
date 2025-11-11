@@ -5,6 +5,7 @@ import { Chat } from "./pages/Chat";
 import { Landing } from "./pages/Landing";
 import { Profile } from "./pages/Profile";
 import { Dashboard } from "./pages/Dashboard";
+import { UploadNotes } from "./pages/UploadNotes";
 import { Navigation } from "./components/common/Navigation";
 import { useAuthContext } from "./contexts/AuthContext";
 import SignUpForm from "./_auth/_forms/SignUpForm";
@@ -59,6 +60,10 @@ function App() {
         <Route
           path="/my-profile"
           element={<ProtectedRoute element={<Profile />} />}
+        />
+        <Route
+          path="/upload-notes"
+          element={<ProtectedRoute element={<UploadNotes />} />}
         />
       </Route>
     </Routes>

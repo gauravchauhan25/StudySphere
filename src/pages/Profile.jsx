@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { User, Mail, Phone, Github } from "lucide-react";
-import api from "../services/appwrite"; // assuming you have an api wrapper
+import api from "../services/appwrite"; 
 
 export const Profile = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Example: fetch user data from Appwrite
     const fetchUser = async () => {
       try {
-        const response = await api.getProfile(); // <-- implement this in your service
+        const response = await api.getProfile();
         setUser(response);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -47,7 +46,7 @@ export const Profile = () => {
 
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {user?.name || "John"}
+                {user?.name || "Hemangi"}
               </h2>
               <p className="text-gray-600 dark:text-gray-300">
                 {user?.bio || "No bio available"}
