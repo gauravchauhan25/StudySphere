@@ -18,7 +18,7 @@ const ProtectedRoute = ({ element }) => {
 };
 
 const AppLayout = () => (
-  <div className="min-h-screen bg-gray-50">
+  <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-200 transition-colors">
     <Navigation />
     <Outlet />
   </div>
@@ -30,7 +30,13 @@ function App() {
   return (
     <Routes>
       {/* Auth routes (no nav) */}
-      <Route element={<Authlayout />}>
+      <Route
+        element={
+          <div className="min-h-screen bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-200 transition-colors">
+            <Authlayout />
+          </div>
+        }
+      >
         <Route
           path="/sign-in"
           element={
