@@ -90,8 +90,8 @@ export class Services {
     try {
       this.account.createOAuth2Session(
         "github",
-        "https://m723x5-5173.csb.app/",
-        "https://m723x5-5173.csb.app/sign-in"
+        "http://study-sphere-private.vercel.app/",
+        "http://study-sphere-private.vercel.app/sign-in"
       );
     } catch (error) {
       console.log("Error logging in github: ", error);
@@ -111,22 +111,19 @@ export class Services {
   async getAccount() {
     try {
       const session = await this.account.getSession("current");
-      if (!session) {
-        console.log("No session found");
-        return null;
-      }
-
-      // Session exists, now get account info
-      return await this.account.get();
+      if (!session) return null;         // not logged in, no need to call account.get()
+  
+      return await this.account.get();   // now safe
     } catch (error) {
-      console.error("Error fetching account or session:", error);
+      console.log("Error fetching account or session:", error);
       return null;
     }
   }
+  
 
   async getCurrentAuthProvider() {
     try {
-      const session = await this.account.getSession('current'); 
+      const session = await this.account.getSession("current");
       return session.provider;
     } catch (err) {
       return null;

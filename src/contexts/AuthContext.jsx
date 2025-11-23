@@ -1,4 +1,3 @@
-import React from "react";
 import { useContext, useState, useEffect, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/appwrite.js";
@@ -9,14 +8,14 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [authProvider, setAuthProvider] = useState(null);
+  const [authProvider , setAuthProvider] = useState(null);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const user = await api.getAccount();
-        if (!user) return;
+        if (!user) return
         setIsAuthenticated(true);
         setUser(user);
       } catch (error) {
@@ -29,16 +28,16 @@ export const AuthProvider = ({ children }) => {
 
     const getAuthProvider = async () => {
       if (!isAuthenticated) return;
-
+      
       try {
         const provider = await api.getCurrentAuthProvider();
 
-        if (provider === "google") {
-          setAuthProvider("google");
-        } else if (provider === "github") {
-          setAuthProvider("github");
-        } else if (provider === "email" || provider === "email-password") {
-          setAuthProvider("normal login");
+        if (provider === 'google') {
+          setAuthProvider("google")
+        } else if (provider === 'github') {
+          setAuthProvider("github")
+        } else if (provider === 'email' || provider === 'email-password') {
+          setAuthProvider("normal login")
         }
       } catch {
         setAuthProvider(null);
@@ -96,7 +95,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         setLoading,
         authProvider,
-        setAuthProvider,
+        setAuthProvider
       }}
     >
       {children}
