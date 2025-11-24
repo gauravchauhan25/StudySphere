@@ -1,274 +1,208 @@
-import { useState, useEffect } from "react";
-import { FileText, Download, Eye, Calendar, Book, Trash2 } from "lucide-react";
-import { supabase } from "../lib/supabase";
+import { useEffect, useState } from "react";
+import { supabaseNotes } from "../lib/supabase_notes";
+import { Search, FileText, Eye, Download } from "lucide-react";
 
-export default function NotesList({ refreshTrigger }) {
+export default function NotesList() {
   const [notes, setNotes] = useState([]);
+  const [filteredNotes, setFilteredNotes] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
   const [loading, setLoading] = useState(true);
-  const [filterSemester, setFilterSemester] = useState("all");
-  const [filterSubject, setFilterSubject] = useState("all");
-  const [currentUserId, setCurrentUserId] = useState(null);
 
-  const uniqueSubjects = Array.from(
-    new Set(notes.map((note) => note.subject))
-  ).sort();
-
+  // ---------- FETCH NOTES ----------
   useEffect(() => {
-    getCurrentUser();
-    fetchNotes();
-  }, [refreshTrigger]);
-
-  const getCurrentUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    setCurrentUserId(user?.id || null);
-  };
-
-  const fetchNotes = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
+    const fetchNotes = async () => {
+      setLoading(true);
+      const { data, error } = await supabaseNotes
         .from("notes")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      setNotes(data || []);
-    } catch (error) {
-      console.error("Error fetching notes:", error);
-    } finally {
+      if (!error) {
+        setNotes(data);
+        setFilteredNotes(data);
+      }
       setLoading(false);
-    }
-  };
+    };
 
-  const handleDownload = async (note) => {
+    fetchNotes();
+  }, []);
+
+  // ---------- APPLY FILTERS ----------
+  useEffect(() => {
+    let filtered = notes;
+
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(
+        (note) =>
+          note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          note.subject?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          note.uploaded_by?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (selectedSemester) {
+      filtered = filtered.filter(
+        (note) => Number(note.semester) === Number(selectedSemester)
+      );
+    }
+
+    if (selectedSubject) {
+      filtered = filtered.filter((note) => note.subject === selectedSubject);
+    }
+
+    setFilteredNotes(filtered);
+  }, [searchQuery, selectedSemester, selectedSubject, notes]);
+
+  // ---------- DOWNLOAD FUNCTION ----------
+  const handleDownload = async (url, fileName) => {
     try {
-      const { data, error } = await supabase.storage
-        .from("notes")
-        .download(note.file_path);
-
-      if (error) throw error;
-
-      const url = URL.createObjectURL(data);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = note.file_name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error downloading file:", error);
-      alert("Failed to download file");
+      const res = await fetch(url);
+      const blob = await res.blob();
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Download failed:", err);
+      alert("Download failed. Try again.");
     }
   };
-
-  const handleView = async (note) => {
-    try {
-      const { data } = supabase.storage
-        .from("notes")
-        .getPublicUrl(note.file_path);
-
-      window.open(data.publicUrl, "_blank");
-    } catch (error) {
-      console.error("Error viewing file:", error);
-    }
-  };
-
-  const handleDelete = async (note) => {
-    if (!confirm("Are you sure you want to delete this note?")) return;
-
-    try {
-      const { error: storageError } = await supabase.storage
-        .from("notes")
-        .remove([note.file_path]);
-
-      if (storageError) throw storageError;
-
-      const { error: dbError } = await supabase
-        .from("notes")
-        .delete()
-        .eq("id", note.id);
-
-      if (dbError) throw dbError;
-
-      fetchNotes();
-    } catch (error) {
-      console.error("Error deleting note:", error);
-      alert("Failed to delete note");
-    }
-  };
-
-  const filteredNotes = notes.filter((note) => {
-    if (filterSemester !== "all" && note.semester !== filterSemester)
-      return false;
-    if (filterSubject !== "all" && note.subject !== filterSubject) return false;
-    return true;
-  });
-
-  const formatFileSize = (bytes) => {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  if (loading) {
-    return (
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-cyan-100 dark:bg-cyan-900 rounded-lg">
-            <FileText className="w-6 h-6 text-cyan-600 dark:text-cyan-300" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-            Shared Notes
-          </h2>
-        </div>
-        <span className="px-4 py-2 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold">
-          {filteredNotes.length} notes
-        </span>
+  <div className="pr-2">
+
+    {/* ---------- SEARCH + FILTERS ---------- */}
+    <div className="flex flex-col md:flex-row gap-4 mb-8">
+
+      {/* Search */}
+      <div className="relative flex-1">
+        <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+        <input
+          type="text"
+          placeholder="Search by title, subject, or uploaded by..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-11 pr-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg 
+          bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 
+          focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+        />
       </div>
 
-      <div className="flex flex-wrap gap-4 mb-6">
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">
-            Filter by Semester
-          </label>
-          <select
-            value={filterSemester}
-            onChange={(e) =>
-              setFilterSemester(
-                e.target.value === "all" ? "all" : Number(e.target.value)
-              )
-            }
-            className="px-4 py-2 border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-lg focus:border-blue-500 outline-none transition-all"
-          >
-            <option value="all">All Semesters</option>
-            {[1, 2, 3, 4, 5, 6].map((sem) => (
-              <option key={sem} value={sem}>
-                Semester {sem}
-              </option>
-            ))}
-          </select>
-        </div>
+      {/* Semester Filter */}
+      <select
+        className="px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg 
+        bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 
+        focus:ring-2 focus:ring-blue-500 transition-all"
+        value={selectedSemester}
+        onChange={(e) => {
+          setSelectedSemester(e.target.value);
+          setSelectedSubject("");
+        }}
+      >
+        <option value="">All Semesters</option>
+        {[1, 2, 3, 4, 5, 6].map((sem) => (
+          <option key={sem} value={sem}>
+            Semester {sem}
+          </option>
+        ))}
+      </select>
 
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 dark:text-gray-300 mb-2">
-            Filter by Subject
-          </label>
-          <select
-            value={filterSubject}
-            onChange={(e) => setFilterSubject(e.target.value)}
-            className="px-4 py-2 border-2 border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-lg focus:border-blue-500 outline-none transition-all"
-          >
-            <option value="all">All Subjects</option>
-            {uniqueSubjects.map((subject) => (
-              <option key={subject} value={subject}>
-                {subject}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {filteredNotes.length === 0 ? (
-        <div className="text-center py-12">
-          <FileText className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-          <p className="text-gray-500 dark:text-gray-300 text-lg">
-            No notes available
-          </p>
-          <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
-            Be the first to share your notes!
-          </p>
-        </div>
-      ) : (
-        <div className="grid gap-4">
-          {filteredNotes.map((note) => (
-            <div
-              key={note.id}
-              className="border-2 border-gray-100 dark:border-gray-700 rounded-lg p-5 hover:border-blue-300 dark:hover:border-blue-500 hover:shadow-md transition-all"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <h3 className="font-bold text-lg text-gray-800 dark:text-white mb-2">
-                    {note.title}
-                  </h3>
-
-                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-300 mb-3">
-                    <div className="flex items-center gap-1">
-                      <Book className="w-4 h-4" />
-                      <span className="font-medium">{note.subject}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded font-semibold text-xs">
-                        Semester {note.semester}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      <span>{formatDate(note.created_at)}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                    <FileText className="w-4 h-4" />
-                    <span>{note.file_name}</span>
-                    <span className="text-gray-400 dark:text-gray-600">•</span>
-                    <span>{formatFileSize(note.file_size)}</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={() => handleView(note)}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors font-medium"
-                  >
-                    <Eye className="w-4 h-4" />
-                    View
-                  </button>
-
-                  <button
-                    onClick={() => handleDownload(note)}
-                    className="flex items-center gap-2 px-4 py-2 bg-cyan-600 dark:bg-cyan-700 text-white rounded-lg hover:bg-cyan-700 dark:hover:bg-cyan-800 transition-colors font-medium"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download
-                  </button>
-
-                  {currentUserId === note.uploaded_by && (
-                    <button
-                      onClick={() => handleDelete(note)}
-                      className="flex items-center gap-2 px-4 py-2 bg-red-600 dark:bg-red-700 text-white rounded-lg hover:bg-red-700 dark:hover:bg-red-800 transition-colors font-medium"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
+      {/* Subject Filter */}
+      <select
+        className="px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg 
+        bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 
+        focus:ring-2 focus:ring-blue-500 transition-all disabled:opacity-40"
+        value={selectedSubject}
+        onChange={(e) => setSelectedSubject(e.target.value)}
+        disabled={!selectedSemester}
+      >
+        <option value="">All Subjects</option>
+        {selectedSemester &&
+          [...new Set(
+            notes
+              .filter((n) => n.semester === Number(selectedSemester))
+              .map((n) => n.subject)
+          )].map((subj) => (
+            <option key={subj} value={subj}>
+              {subj}
+            </option>
           ))}
-        </div>
-      )}
+      </select>
     </div>
-  );
+
+    {/* ---------- LOADING UI ---------- */}
+    {loading && (
+      <p className="text-center text-gray-500 dark:text-gray-300 animate-pulse">
+        Loading notes...
+      </p>
+    )}
+
+    {/* ---------- NO NOTES FOUND ---------- */}
+    {!loading && filteredNotes.length === 0 && (
+      <p className="text-center text-gray-500 dark:text-gray-300">
+        No notes found.
+      </p>
+    )}
+
+    {/* ---------- NOTES GRID ---------- */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+      {filteredNotes.map((note) => (
+        <div
+          key={note.id}
+          className="p-5 bg-white dark:bg-gray-900 rounded-xl shadow-sm 
+          border border-gray-200 dark:border-gray-800 
+          hover:shadow-lg hover:-translate-y-1 transition-all"
+        >
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
+              <FileText className="w-6 h-6 text-blue-700 dark:text-blue-300" />
+            </div>
+            <h3
+              className="font-semibold text-lg text-gray-900 dark:text-gray-200 truncate"
+              title={note.title}
+            >
+              {note.title || "Untitled Note"}
+            </h3>
+          </div>
+
+          <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
+            <p><strong>Uploaded By:</strong> {note.uploaded_by}</p>
+            <p><strong>Semester:</strong> {note.semester || "-"}</p>
+            <p><strong>Subject:</strong> {note.subject}</p>
+            <p><strong>File Size:</strong> {(note.file_size / 1024).toFixed(2)} KB</p>
+          </div>
+
+          <div className="flex gap-2 mt-4">
+            {/* View button */}
+            <a
+              href={note.public_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 
+              bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg 
+              font-medium transition-all"
+            >
+              <Eye className="w-5 h-5" /> View
+            </a>
+
+            {/* Download button */}
+            <button
+              onClick={() => handleDownload(note.public_url, note.file_name)}
+              className="flex-1 flex items-center justify-center gap-2 
+              bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg 
+              font-medium transition-all"
+            >
+              <Download className="w-5 h-5" /> Download
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 }

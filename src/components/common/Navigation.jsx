@@ -29,6 +29,7 @@ export const Navigation = () => {
     { name: "Dashboard", href: "/dashboard" },
     { name: "Reminders", href: "/reminders" },
     { name: "Upload Notes", href: "/upload-notes" },
+    { name: "Q&A Forum", href: "/qna" },
   ];
 
   const [darkMode, setDarkMode] = useState(() => {
@@ -257,4 +258,4 @@ export const Navigation = () => {
       </div>
     </nav>
   );
-};
+}; 

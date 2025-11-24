@@ -1,62 +1,155 @@
-import { useState } from "react";
-import { Upload, FileText } from "lucide-react";
-import { supabase } from "../lib/supabase";
-import { SUBJECTS_BY_SEMESTER } from "../types/note";
+import React, { useState } from "react";
+import { supabaseNotes } from "../lib/supabase_notes";
+import { FileText } from "lucide-react";
 
-export default function UploadNoteForm({ onUploadSuccess }) {
-  const [semester, setSemester] = useState(1);
-  const [subject, setSubject] = useState("");
+const UploadNoteForm = ({ onUploadSuccess }) => {
+  const [uploadedBy, setUploadedBy] = useState(""); 
   const [title, setTitle] = useState("");
+  const [subject, setSubject] = useState("");
+  const [semester, setSemester] = useState("");
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      const allowedTypes = [
-        "application/pdf",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/msword",
-        "image/png",
-        "image/jpeg",
-        "image/jpg",
-      ];
-
-      if (!allowedTypes.includes(selectedFile.type)) {
-        setError("Please upload PDF, DOCX, or image files only");
-        setFile(null);
-        return;
-      }
-
-      if (selectedFile.size > 10 * 1024 * 1024) {
-        setError("File size must be less than 10MB");
-        setFile(null);
-        return;
-      }
-
-      setFile(selectedFile);
-      setError("");
-    }
+  const SUBJECTS_BY_SEMESTER = {
+    1: [
+      "Mathematics I",
+      "Physics",
+      "Chemistry",
+      "Engineering Drawing",
+      "Programming Fundamentals",
+    ],
+    2: [
+      "Mathematics II",
+      "Electronics",
+      "Mechanics",
+      "Environmental Science",
+      "Data Structures",
+    ],
+    3: [
+      "Mathematics III",
+      "Digital Logic",
+      "Computer Architecture",
+      "Database Systems",
+      "Operating Systems",
+    ],
+    4: [
+      "Algorithms",
+      "Software Engineering",
+      "Computer Networks",
+      "Theory of Computation",
+      "Web Development",
+    ],
+    5: [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Compiler Design",
+      "Mobile Computing",
+      "Cloud Computing",
+    ],
+    6: [
+      "Distributed Systems",
+      "Cybersecurity",
+      "IoT",
+      "Blockchain",
+      "Project Management",
+    ],
   };
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    alert("Upload feature Add krna");
+
+    if (!uploadedBy || !file || !subject) {
+      setError(
+        "Please enter your name/enrollment, subject, and select a file."
+      );
+      return;
+    }
+
+    try {
+      setUploading(true);
+      setError("");
+
+      const fileExt = file.name.split(".").pop();
+      const fileName = file.name; // original file name
+      const fileSize = file.size; // bytes
+      const uniqueFileName = `${crypto.randomUUID()}.${fileExt}`;
+      const filePath = `${semester || "General"}/${subject}/${uniqueFileName}`;
+
+      // Upload to Supabase Storage
+      const { error: uploadError } = await supabaseNotes.storage
+        .from("notes")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: urlData } = supabaseNotes.storage
+        .from("notes")
+        .getPublicUrl(filePath);
+      const publicUrl = urlData.publicUrl;
+
+      // Insert into SQL table
+      const { data: newNote, error: dbError } = await supabaseNotes
+        .from("notes")
+        .insert([
+          {
+            uploaded_by: uploadedBy,
+            title: title || fileName,
+            subject,
+            semester: semester || null,
+            file_name: fileName,
+            file_size: fileSize,
+            file_path: filePath,
+            public_url: publicUrl,
+          },
+        ])
+        .select()
+        .single();
+
+      if (dbError) throw dbError;
+
+      // Reset form
+      setUploadedBy("");
+      setTitle("");
+      setSubject("");
+      setSemester("");
+      setFile(null);
+
+      // Callback to update notes list
+      if (onUploadSuccess) onUploadSuccess(newNote);
+
+      alert("File uploaded successfully!");
+    } catch (err) {
+      console.error(err);
+      setError("Upload failed. Please try again.");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 transition-colors">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
-          <Upload className="w-6 h-6 text-blue-600 dark:text-blue-300" />
-        </div>
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
-          Upload Notes
-        </h2>
-      </div>
+    <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md mb-6">
+      <h2 className="text-xl font-semibold mb-4">Upload Notes</h2>
+
+      {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
       <form onSubmit={handleUpload} className="space-y-6">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+            Enrollment Number
+          </label>
+
+          <input
+            type="text"
+            placeholder="Enrollment No"
+            className="w-full border p-2 rounded"
+            value={uploadedBy}
+            onChange={(e) => setUploadedBy(e.target.value)}
+            required
+          />
+        </div>
+
         <div>
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
             Semester
@@ -67,8 +160,10 @@ export default function UploadNoteForm({ onUploadSuccess }) {
               setSemester(Number(e.target.value));
               setSubject("");
             }}
-            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-700 outline-none transition-all"
+            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-lg"
           >
+            <option value="">Select a semester</option>
+
             {[1, 2, 3, 4, 5, 6].map((sem) => (
               <option key={sem} value={sem}>
                 Semester {sem}
@@ -88,7 +183,7 @@ export default function UploadNoteForm({ onUploadSuccess }) {
             required
           >
             <option value="">Select a subject</option>
-            {SUBJECTS_BY_SEMESTER[semester].map((subj) => (
+            {SUBJECTS_BY_SEMESTER[semester]?.map((subj) => (
               <option key={subj} value={subj}>
                 {subj}
               </option>
@@ -117,7 +212,7 @@ export default function UploadNoteForm({ onUploadSuccess }) {
             <input
               id="file-upload"
               type="file"
-              onChange={handleFileChange}
+              onChange={(e) => setFile(e.target.files[0])}
               accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
               className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-700 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100 dark:hover:file:bg-blue-800 cursor-pointer"
               required
@@ -154,4 +249,6 @@ export default function UploadNoteForm({ onUploadSuccess }) {
       </form>
     </div>
   );
-}
+};
+
+export default UploadNoteForm;

@@ -17,6 +17,7 @@ export class Services {
     this.storage = new Storage(this.client);
   }
 
+
   //================CREATES A ACCOUNT FOR USER=================
   async createAccount({ email, password, name, phoneNumber }) {
     try {
@@ -41,8 +42,9 @@ export class Services {
   }
 
   //===========ADD USER TO DB=============
-  async addUser(userId, name, email, phoneNumber) {
+  async addUser(userId, name, email) {
     try {
+      // console.log(phoneNumber)
       const response = await this.databases.createDocument(
         config.appwriteDatabaseID,
         config.appwriteUsersCollectionID,
@@ -50,7 +52,6 @@ export class Services {
         {
           name,
           email,
-          phoneNumber,
           userId: userId,
         }
       );
@@ -90,8 +91,8 @@ export class Services {
     try {
       this.account.createOAuth2Session(
         "github",
-        "http://study-sphere-private.vercel.app/",
-        "http://study-sphere-private.vercel.app/sign-in"
+        "https://study-sphere-private.vercel.app/",
+        "https://study-sphere-private.vercel.app/sign-in"
       );
     } catch (error) {
       console.log("Error logging in github: ", error);
@@ -111,19 +112,22 @@ export class Services {
   async getAccount() {
     try {
       const session = await this.account.getSession("current");
-      if (!session) return null;         // not logged in, no need to call account.get()
-  
-      return await this.account.get();   // now safe
+      if (!session) {
+        console.log("No session found");
+        return null;
+      }
+
+      // Session exists, now get account info
+      return await this.account.get();
     } catch (error) {
-      console.log("Error fetching account or session:", error);
+      console.error("Error fetching account or session:", error);
       return null;
     }
   }
-  
 
   async getCurrentAuthProvider() {
     try {
-      const session = await this.account.getSession("current");
+      const session = await this.account.getSession('current'); 
       return session.provider;
     } catch (err) {
       return null;

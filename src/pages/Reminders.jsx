@@ -13,8 +13,6 @@ export const Reminders = () => {
     }
   }, []);
 
-
-  // ✅ Check every 10 seconds if reminder time reached
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
@@ -23,23 +21,20 @@ export const Reminders = () => {
         prevReminders.map((reminder) => {
           if (!reminder.notified && now >= new Date(reminder.date)) {
             showNotification(reminder.title);
-            return { ...reminder, notified: true }; // mark as notified
+            return { ...reminder, notified: true };
           }
           return reminder;
         })
       );
-    }, 10000); // every 10 seconds
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // ✅ Function to show browser notification
   const showNotification = (message) => {
-    // Play sound
-    const audio = new Audio("/Pirates.mp3");
+    const audio = new Audio("/tone.mp3");
     audio.play().catch((err) => console.log("Audio play failed:", err));
 
-    // Show browser notification
     if (Notification.permission === "granted") {
       new Notification("Study Sphere Reminder 🔔", {
         body: message,
@@ -50,8 +45,6 @@ export const Reminders = () => {
     }
   };
 
-
-  // ✅ Add reminder
   const handleAddReminder = (e) => {
     e.preventDefault();
     if (!newReminder.title || !newReminder.date) return;
@@ -68,14 +61,12 @@ export const Reminders = () => {
     setShowForm(false);
   };
 
-  // ✅ Delete reminder
   const handleDeleteReminder = (id) => {
     setReminders((prev) => prev.filter((r) => r.id !== id));
   };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
-      {/* Header Banner */}
       <div className="bg-gradient-to-r from-blue-600 to-teal-500 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl sm:text-4xl font-bold mb-4">Reminders</h1>
@@ -86,7 +77,6 @@ export const Reminders = () => {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Quick Actions */}
         <div className="mb-6">
           <Button
             size="lg"
@@ -98,7 +88,6 @@ export const Reminders = () => {
           </Button>
         </div>
 
-        {/* Add Reminder Form */}
         {showForm && (
           <form
             onSubmit={handleAddReminder}
@@ -139,7 +128,6 @@ export const Reminders = () => {
           </form>
         )}
 
-        {/* Reminder List */}
         <div className="space-y-4">
           {reminders.length === 0 ? (
             <p className="text-gray-500 dark:text-gray-400 text-center">

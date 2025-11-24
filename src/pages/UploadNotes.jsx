@@ -12,11 +12,20 @@ export function UploadNotes() {
 
   return (
     <>
-      <div className="dark:bg-gray-900 dark:text-gray-100">
-        <div className="grid lg:grid-cols-2 gap-8 mt-10 mb-12">
-          <UploadNoteForm onUploadSuccess={handleUploadSuccess} />
-          <NotesList refreshTrigger={refreshTrigger} />
-        </div>
+      <div className="flex gap-10 mt-10 mb-12 px-6">
+    
+  {/* Upload Form — takes more space */}
+  <div className="w-full lg:w-1/3">
+    <UploadNoteForm onUploadSuccess={handleUploadSuccess} />
+  </div>
+
+  {/* Notes List — shifts aside and becomes smaller */}
+  <div className="w-full lg:w-2/3">
+    <NotesList refreshTrigger={refreshTrigger} />
+  </div>
+
+</div>
+
 
         {/* HERO SECTION */}
         <section className="container mx-auto px-6 py-12">
@@ -101,7 +110,6 @@ export function UploadNotes() {
             </p>
           </div>
         </footer>
-      </div>
     </>
   );
 }

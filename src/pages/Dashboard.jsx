@@ -15,7 +15,7 @@ export const Dashboard = () => {
   const [savedChats] = useState([
     {
       id: "1",
-      title: "Math Help - Quadratic Equations",
+      title: "Revision",
       messages: [],
       createdAt: new Date(2025, 0, 15),
       updatedAt: new Date(2025, 0, 15),
