@@ -4,7 +4,6 @@ import { QuickReplies } from "../components/chat/QuickReplies";
 import { TypingIndicator } from "../components/chat/TypingIndicator";
 import { MessageInput } from "../components/chat/MessageInput";
 
-// ✅ Inline ChatBubble component with proper formatting + clickable links
 const ChatBubble = ({ message }) => {
   const formatMessage = (text) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -77,7 +76,7 @@ export const Chat = () => {
 
   async function getChatbotResponse(messages) {
     const response = await fetch(
-      " https://study-sphere-jet.vercel.app/api/chat",
+      "https://study-sphere-jet.vercel.app/api/chat",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

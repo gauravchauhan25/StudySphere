@@ -4,3 +4,16 @@
 @tailwind utilities;
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+  text-align: center;
+}
+
+.center-container img {
+  width: 4rem;
+  height: 4rem;
+}

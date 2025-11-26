@@ -2,6 +2,7 @@ import React from "react";
 import { useContext, useState, useEffect, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/appwrite.js";
+import LoadingScreen from "../components/common/LoadingScreen.jsx";
 
 const AuthContext = createContext();
 
@@ -87,6 +88,8 @@ export const AuthProvider = ({ children }) => {
 
     fetchGoogleUserData();
   }, []);
+
+  if (loading) return <LoadingScreen />;
 
   return (
     <AuthContext.Provider
