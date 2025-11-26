@@ -15,6 +15,7 @@ import {
 import { Button } from "./Button";
 import { useAuthContext } from "../../contexts/AuthContext";
 import api from "../../services/appwrite";
+import logo from "/logo.png";
 
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -80,8 +81,8 @@ export const Navigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-500 rounded-lg flex items-center justify-center gap-3">
-              <GraduationCap className="w-8 h-8 text-white" />
+            <div className="w-auto h-auto flex items-center justify-center">
+              <img src={logo} className="w-24 h-24 text-white" />
             </div>
             <span className="text-xl font-bold text-gray-900 dark:text-white">
               StudySphere
@@ -258,4 +259,4 @@ export const Navigation = () => {
       </div>
     </nav>
   );
-}; 
+};

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { User, Mail, Phone, Github } from "lucide-react";
-import api from "../services/appwrite"; 
+import api from "../services/appwrite";
 
 export const Profile = () => {
   const [user, setUser] = useState(null);
@@ -17,6 +17,9 @@ export const Profile = () => {
 
     fetchUser();
   }, []);
+
+  const defaultImage =
+    "https://pathwayactivities.co.uk/wp-content/uploads/2016/04/Profile_avatar_placeholder_large-circle-300x300.png";
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 dark:text-gray-100">
@@ -36,17 +39,14 @@ export const Profile = () => {
           <div className="flex items-center space-x-6">
             {/* Avatar */}
             <img
-              src={
-                user?.avatar ||
-                "https://avatars.githubusercontent.com/u/9919?s=200&v=4"
-              }
+              src={user?.avatar || defaultImage}
               alt="User Avatar"
               className="w-24 h-24 rounded-full border-4 border-blue-600 shadow-md"
             />
 
             <div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {user?.name || "Hemangi"}
+                {user?.name || ""}
               </h2>
               <p className="text-gray-600 dark:text-gray-300">
                 {user?.bio || "No bio available"}
