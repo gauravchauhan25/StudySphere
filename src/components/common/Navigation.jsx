@@ -26,7 +26,7 @@ export const Navigation = () => {
 
   const navigation = [
     { name: "Home", href: "/" },
-    { name: "Dashboard", href: "/dashboard" },
+    { name: "Ask StudyGenie", href: "/chat" },
     { name: "Reminders", href: "/reminders" },
     { name: "Upload Notes", href: "/upload-notes" },
     { name: "Q&A Forum", href: "/qna" },
@@ -117,7 +117,7 @@ export const Navigation = () => {
             )}
 
             <div className="hidden md:flex">
-              <Link to="/dashboard">
+              <Link to="/chat">
                 <Button size="sm">Start Chatting</Button>
               </Link>
             </div>

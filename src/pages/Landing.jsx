@@ -8,6 +8,8 @@ import {
   Star,
   Zap,
   Shield,
+  Sparkles,
+  Upload
 } from "lucide-react";
 import { Button } from "../components/common/Button";
 import { Card } from "../components/common/Card";
@@ -112,6 +114,55 @@ export const Landing = () => {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* FEATURES SECTION */}
+      <section className="container mx-auto px-6 py-14">
+        <div className="grid md:grid-cols-3 gap-8 text-center">
+          {[
+            {
+              icon: <BookOpen className="w-7 h-7 text-blue-600 dark:text-blue-300" />,
+              title: "Smart Learning",
+              text: "Access structured notes curated subject-wise & semester-wise.",
+              bg: "from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-800",
+            },
+            {
+              icon: <Users className="w-7 h-7 text-cyan-600 dark:text-cyan-300" />,
+              title: "Community Driven",
+              text: "Help other students by uploading your notes and learning resources.",
+              bg: "from-cyan-50 to-cyan-100 dark:from-gray-700 dark:to-gray-800",
+            },
+            {
+              icon: <Sparkles className="w-7 h-7 text-purple-600 dark:text-purple-300" />,
+              title: "Always Available",
+              text: "Download and study anytime, anywhere. 24/7 accessibility.",
+              bg: "from-purple-50 to-purple-100 dark:from-gray-700 dark:to-gray-800",
+            },
+          ].map((card) => (
+            <div
+              key={card.title}
+              className={`bg-gradient-to-br ${card.bg} p-7 rounded-xl shadow-lg hover:shadow-2xl transition-all hover:-translate-y-1`}
+            >
+              <div className="flex justify-center mb-4">{card.icon}</div>
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                {card.title}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300">{card.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* MISSION SECTION */}
+      <section className="py-14 bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-800 dark:to-cyan-700 text-white text-center px-6">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <Upload className="w-8 h-8" />
+          <h2 className="text-3xl font-bold">Our Mission</h2>
+        </div>
+        <p className="max-w-3xl mx-auto text-lg leading-relaxed opacity-95">
+          To build a supportive academic ecosystem powered by collaboration where every student,
+          regardless of background, gets equal access to high-quality learning resources.
+        </p>
       </section>
 
       {/* Benefits Section */}

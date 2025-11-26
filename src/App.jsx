@@ -4,7 +4,6 @@ import { Reminders } from "./pages/Reminders";
 import { Chat } from "./pages/Chat";
 import { Landing } from "./pages/Landing";
 import { Profile } from "./pages/Profile";
-import { Dashboard } from "./pages/Dashboard";
 import { UploadNotes } from "./pages/UploadNotes";
 import { Navigation } from "./components/common/Navigation";
 import { useAuthContext } from "./contexts/AuthContext";
@@ -67,8 +66,6 @@ function App() {
     };
 
     fetchGoogleUserData();
-
-    
   }, []);
 
   return (
@@ -99,10 +96,6 @@ function App() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<Landing />} />
         <Route path="/chat" element={<ProtectedRoute element={<Chat />} />} />
-        <Route
-          path="/dashboard"
-          element={<ProtectedRoute element={<Dashboard />} />}
-        />
         <Route
           path="/reminders"
           element={<ProtectedRoute element={<Reminders />} />}
