@@ -1,16 +1,131 @@
-# React + Vite
+# 🎓 StudySphere
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+StudySphere is an AI-powered student assistance platform designed to enhance learning, improve productivity, and provide instant academic support. The platform helps students access study resources, interact with an intelligent chatbot, organize learning materials, and streamline their educational journey through a single, user-friendly interface.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Overview
 
-## React Compiler
+StudySphere aims to create a centralized learning environment where students can:
 
-The React Compiler is not enabled on this template. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Get instant academic assistance through AI.
+- Access and manage study resources.
+- Improve learning efficiency.
+- Stay organized with educational tools.
+- Collaborate and engage in a student-focused ecosystem.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ✨ Features
+
+### 🤖 AI Study Assistant
+- Intelligent chatbot for answering academic questions.
+- Provides explanations, summaries, and learning guidance.
+- Available 24/7 for student support.
+
+### 📚 Study Resources
+- Access educational materials and learning content.
+- Organize and manage study resources efficiently.
+
+### 👤 User Authentication
+- Secure user registration and login.
+- Personalized student experience.
+
+### 📊 Student Dashboard
+- Centralized interface for accessing platform features.
+- Easy navigation and resource management.
+
+### 🔍 Smart Search
+- Quickly find relevant study materials and information.
+
+### 📱 Responsive Design
+- Optimized for desktop, tablet, and mobile devices.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- React.js
+- JavaScript (ES6+)
+- HTML5
+- CSS3
+
+### Backend
+- Appwrite (BaaS)
+
+### Database
+- Supabase
+
+### Authentication
+- Appwrite Authentication Services
+
+### AI Integration
+- Gemini API
+
+### Deployment
+- Vercel
+- Appwrite Cloud
+
+---
+
+## 🎯 Objectives
+
+- Improve student learning experiences.
+- Provide instant AI-powered academic support.
+- Create an organized educational ecosystem.
+- Make learning resources easily accessible.
+- Increase productivity through intelligent assistance.
+
+---
+
+## 📈 Current Status
+
+### Completed
+- Frontend development
+- User interface design
+- Authentication system
+- AI chatbot integration
+- Database integration
+- Responsive layouts
+
+### In Progress
+- Performance optimization
+- Additional AI capabilities
+- Enhanced study management features
+
+### Planned Features
+- AI-generated study plans
+- Notes summarization
+- Quiz generation
+- Progress tracking
+- Collaborative study groups
+- File uploads and document analysis
+
+---
+
+## 🔮 Future Enhancements
+
+- Voice-based AI assistant
+- Personalized learning recommendations
+- Real-time collaboration tools
+- Gamification and achievement system
+- Learning analytics dashboard
+- Mobile application
+
+---
+
+## 🤝 Contributing
+
+Contributions, feature suggestions, and improvements are welcome.
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Open a Pull Request
+
+---
+
+## 👨‍💻 Author
+
+Developed by Gaurav Singh Chauhan, Hemangi Khurana, Manika Bhandari and Anuj Koli
